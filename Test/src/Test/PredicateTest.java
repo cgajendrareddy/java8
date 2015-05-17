@@ -10,12 +10,7 @@ import java.util.function.Predicate;
 public class PredicateTest<T> {
     public List<T> testPredicate(Predicate<T> p,List<T> list){
         List<T> returnList=new ArrayList<>();
-        for (T t: list)
-        {
-            if(p.test(t)){
-                returnList.add(t);
-            }
-        }
+
         return returnList;
     }
 
