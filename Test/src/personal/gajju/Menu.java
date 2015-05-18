@@ -3,6 +3,8 @@ package personal.gajju;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -82,7 +84,7 @@ public class Menu {
         System.out.println("menu.stream().noneMatch(d->d.getCalories()>0) = " + menu.stream().noneMatch(d -> d.getCalories() > 0));
 
         //find first
-        System.out.println("menu.stream().filter(d->d.getType()== Dish.Type.MEAT).findFirst() = " + menu.stream().filter(d->d.getType()== Dish.Type.MEAT).findFirst());
+        System.out.println("menu.stream().filter(d->d.getType()== Dish.Type.MEAT).findFirst() = " + menu.stream().filter(d -> d.getType() == Dish.Type.MEAT).findFirst());
         //find any
         System.out.println("menu.stream().filter(Dish::isVegetarian).findAny() = " + menu.stream().filter(Dish::isVegetarian).findAny());
         
@@ -92,8 +94,28 @@ public class Menu {
 
 
 
-
+        //int stream
+        System.out.println("menu.stream().mapToInt(Dish::getCalories).sum() = " + menu.stream().mapToInt(Dish::getCalories).sum());
+        //optional int
+        System.out.println("menu.stream().mapToInt(Dish::getCalories).max().orElse(0) = " + menu.stream().mapToInt(Dish::getCalories).max().orElse(0));
         //dishes.forEach(System.out::println);
+
+
+        Stream<int[]> temp2=IntStream.rangeClosed(1,100).boxed().flatMap(a -> IntStream.rangeClosed(a, 100).filter(b -> Math.sqrt(a * a + b * b) % 1 == 0).mapToObj(b -> new int[]{a, b, (int) Math.sqrt(a * a + b * b)}));
+        //List<int[]> temp5=temp2
+
+        temp2.forEach(a -> {
+            List<Integer> tt = IntStream.of(a).boxed().collect(toList());
+            for (int i = 0; i < a.length; i++) {
+                System.out.print("a[i] = " + a[i]);
+            }
+            System.out.println("");
+        });
+
+
+        Stream<double[]> ttee=IntStream.rangeClosed(1,100).boxed().flatMap(a->IntStream.rangeClosed(a,100).mapToObj(b->new double[]{a,b,Math.sqrt(a*a+b*b)}).filter(t->t[2]%1==0));
+        ttee.forEach(a-> {DoubleStream.of(a).boxed().collect(toList()).forEach(System.out::print);System.out.println();});
     }
+
 
 }
