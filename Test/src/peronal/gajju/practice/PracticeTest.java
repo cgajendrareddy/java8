@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -40,5 +41,7 @@ public class PracticeTest {
         System.out.println("transactions.stream().map(Transaction::getValue).reduce(0,(a,b)->(a>b)?a:b) = " + transactions.stream().map(Transaction::getValue).reduce(Integer::max));
         //8. Find the transaction with the smallest value
         System.out.println("transactions.stream().map(Transaction::getValue).reduce((a,b)->(a<b)?a:b = " + transactions.stream().map(Transaction::getValue).reduce((a,b)->(a<b)?a:b));
+
+        System.out.println("transactions.stream().collect(groupingBy(Transaction::getYear)) = " + transactions.stream().collect(groupingBy(Transaction::getYear)));
     }
 }

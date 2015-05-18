@@ -1,13 +1,12 @@
 package personal.gajju;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 /**
  * Created by cgajendra-0220 on 5/17/15.
@@ -114,8 +113,51 @@ public class Menu {
 
 
         Stream<double[]> ttee=IntStream.rangeClosed(1,100).boxed().flatMap(a->IntStream.rangeClosed(a,100).mapToObj(b->new double[]{a,b,Math.sqrt(a*a+b*b)}).filter(t->t[2]%1==0));
-        ttee.forEach(a-> {DoubleStream.of(a).boxed().collect(toList()).forEach(System.out::print);System.out.println();});
+        ttee.forEach(a -> {
+            DoubleStream.of(a).boxed().collect(toList()).forEach(System.out::print);
+            System.out.println();
+        });
+
+
+        System.out.println("===============================================");
+        //counting
+        System.out.println("menu.stream().collect(Collectors.counting()) = " + menu.stream().collect(Collectors.counting()));
+        System.out.println("menu.stream().collect(maxBy((d1,d2)->(d1.getCalories()>d2.getCalories())?1:0)) = " + menu.stream().collect(maxBy((d1, d2) -> (d1.getCalories() > d2.getCalories()) ? 1 : 0)));
+        Comparator<Dish> comp= Comparator.comparingInt(Dish::getCalories);
+        //maxBy
+        System.out.println("menu.stream().collect(maxBy(comp)) = " + menu.stream().collect(maxBy(comp)));
+        //summarizing int
+        System.out.println("menu.stream().collect(summarizingInt(Dish::getCalories)) = " + menu.stream().collect(summarizingInt(Dish::getCalories)));
+        //joining
+        System.out.println("menu.stream().map(Dish::getName) = " + menu.stream().map(Dish::getName).collect(joining()));
+        //joining with deli
+        System.out.println("menu.stream().map(Dish::getName).collect(joining(\",\", \"[\", \"]\")) = " + menu.stream().map(Dish::getName).collect(joining(",", "[", "]")));
+
+        //reducing
+        System.out.println("menu.stream().collect(reducing(0, Dish::getCalories, (a, b) -> a + b)) = " + menu.stream().collect(reducing(0, Dish::getCalories, (a, b) -> a + b)));
+        System.out.println("menu.stream().collect(reducing((d1,d2)->(d1.getCalories()>d2.getCalories())?d1:d2)) = " + menu.stream().collect(reducing((d1, d2) -> (d1.getCalories() > d2.getCalories()) ? d1 : d2)));
+
+        System.out.println("menu.stream().collect(groupingBy(Dish::getType)) = " + menu.stream().collect(groupingBy(Dish::getType)));
+        System.out.println("menu.stream().collect(groupingBy(d->{)) = " + menu.stream().collect(groupingBy(
+                dish -> {
+            if (dish.getCalories() <= 400) return CaloricLevel.DIET;
+                    else return CaloricLevel.FAT;
+        })));
+
+        System.out.println("menu.stream().collect(groupingBy(Dish::getType,groupingBy(dish->{if (dish.getCalories() <= 400) return CaloricLevel.DIET;\n        else return CaloricLevel.FAT; }))) = " + menu.stream().collect(groupingBy(Dish::getType, groupingBy(dish -> {
+            if (dish.getCalories() <= 400) return CaloricLevel.DIET;
+            else return CaloricLevel.FAT;
+        }))));
+        //Collecting data in subgroups
+        System.out.println("menu.stream().collect(groupingBy(Dish::getType,counting())) = " + menu.stream().collect(groupingBy(Dish::getType, counting())));
+        System.out.println("menu.stream().collect(groupingBy(Dish::getType,maxBy((Dish1,Dish2)->(Dish1.getCalories()>Dish2.getCalories())?1:0))) = " + menu.stream().collect(groupingBy(Dish::getType, maxBy((Dish1, Dish2) -> (Dish1.getCalories() > Dish2.getCalories()) ? 1 : 0))));
+
+
+        //Collecting data in subgroups
+        System.out.println("menu.stream().collect(groupingBy(Dish::getType,collectingAndThen(maxBy(Comparator.comparingInt(Dish::getCalories)), Optional::get))) = " + menu.stream().collect(groupingBy(Dish::getType, collectingAndThen(maxBy(Comparator.comparingInt(Dish::getCalories)), Optional::get))));
+
     }
+    public enum CaloricLevel{DIET,NORMAL,FAT};
 
 
 }
