@@ -155,7 +155,36 @@ public class Menu {
 
         //Collecting data in subgroups
         System.out.println("menu.stream().collect(groupingBy(Dish::getType,collectingAndThen(maxBy(Comparator.comparingInt(Dish::getCalories)), Optional::get))) = " + menu.stream().collect(groupingBy(Dish::getType, collectingAndThen(maxBy(Comparator.comparingInt(Dish::getCalories)), Optional::get))));
+        //Mapping 
+        System.out.println("menu.stream().collect(groupingBy(Dish::getType,mapping(dish))) = " + menu.stream().collect(groupingBy(Dish::getType, mapping(dish -> {
+            if (dish.getCalories() <= 400) return CaloricLevel.DIET;
+            else if (dish.getCalories() <= 700) return CaloricLevel.NORMAL;
+            else return CaloricLevel.FAT;
+        }, toCollection(HashSet::new)))));
 
+        //partitioning
+        System.out.println("menu.stream().collect(partitioningBy(Dish::isVegetarian)) = " + menu.stream().collect(partitioningBy(Dish::isVegetarian)));
+        System.out.println("menu.stream().collect(partitioningBy(Dish::isVegetarian,groupingBy(Dish::getType))) = " + menu.stream().collect(partitioningBy(Dish::isVegetarian, groupingBy(Dish::getType))));
+        System.out.println("menu.stream().collect(partitioningBy(Dish::isVegetarian,maxBy(Comparator.comparingInt(Dish::getCalories)))) = " + menu.stream().collect(partitioningBy(Dish::isVegetarian, maxBy(Comparator.comparingInt(Dish::getCalories)))));
+        System.out.println("IntStream.rangeClosed(1,100).boxed().collect(partitioningBy()) = " + IntStream.rangeClosed(2,100).boxed().collect(partitioningBy(i->isPrime(i))));
+        
+        //custom collector
+        System.out.println("menu.stream().collect(new ToListCollecotr<Dish>()) = " + menu.stream().collect(new ToListCollecotr<Dish>()));
+        
+        //Performing a custom collect without creating a Collector
+        System.out.println("menu.stream().collect(ArrayList::new,List::add,List::addAll) = " + menu.stream().collect(ArrayList::new, List::add, List::addAll));
+
+
+        
+        
+
+
+    }
+
+    public static boolean isPrime(int number)
+    {
+        int candidateRoot=(int)Math.sqrt(number);
+        return IntStream.range(2,candidateRoot).noneMatch(i->number%i==0);
     }
     public enum CaloricLevel{DIET,NORMAL,FAT};
 
